@@ -16,36 +16,29 @@ class fullLog:
     allNone = []
     shineFound = []
     oopList = []
-    txtname = ""
     all_id_resp_address = []
     all_host = []
     all_response_len = []
     none_id_resp_address = []
     none_host = []
     all_referrers = []
+    amount_of_not_oopable = 0
     
-    def __init__(self):
-        self.listLog = []  
-        self.listoflists = []
-        self.allNone = []
-        self.shineFound = []
-        self.oopList = []
-        self.txtname = ""
     
     def __init__(self, txt):
         self.readingList(txt)
         self.logtolistoflists()
+        self.createOOP()
         self.shineFound()        
         self.allNone()
-        self.createOOP()
         self.allIdRespAddress()
+
+
         
     def readingList(self, txt):
         """reading txt to raw list of lines"""
-        self.txtname = txt
         with open(txt) as f:
             f = f.readlines()
-    
         self.listLog = f
 
         
@@ -53,8 +46,11 @@ class fullLog:
         """from list of lines"""
         for line in self.listLog:
             tmpLine = line.strip('\n').split("\t")
-            if len(tmpLine) > 30:
+            if len(tmpLine) > 30 and len(tmpLine) < 37:
                 self.listoflists.append(tmpLine)
+            else:
+                self.amount_of_not_oopable = self.amount_of_not_oopable + 1
+            
                 
     def createOOP(self):
         i = 0
@@ -65,10 +61,18 @@ class fullLog:
         
     def shineFound(self):
         temp = []
-        for line in self.listoflists: 
-            if (line[-1] != "none") and (line[-1] != "generic"):
+        for line in self.oopList: 
+            if (line.adnet != "none") and (line.adnet != "generic"):
                 temp.append(line)
         self.shineFound = temp
+        
+        
+    def allNone(self):
+        temp = []
+        for line in self.oopList:
+            if (line.adnet == "none"):
+                temp.append(line)
+        self.allNone = temp
         
     def allReferrers(self):
         for log in self.oopList:
@@ -78,14 +82,14 @@ class fullLog:
         ooplist = self.oopList
         for log in ooplist:
             self.all_id_resp_address.append(log.id_resp_address)
-            if log.adnet is "none":
+            if log.adnet is "none" or log.adnet is "-":
                 self.none_id_resp_address.append(log.id_resp_address)
                 
     def allHosts(self):
         ooplist = self.oopList
         for log in ooplist:
             self.all_host.append(log.host)
-            if log.adnet is "none":
+            if log.adnet is "none" or log.adnet is "-":
                 self.none_host(log.host)
                 
     def allResponseLen(self):
@@ -93,12 +97,7 @@ class fullLog:
         for log in ooplist:
             self.all_response_len(log.response_header_len)
         
-    def allNone(self):
-        temp = []
-        for line in self.listoflists:
-            if (line[-1] == "none"):
-                temp.append(line)
-        self.allNone = temp
+    
         
     """converts the value given from the form of _from to the form of _to"""
     def translater(self, value ,_from, _to):
