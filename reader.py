@@ -28,8 +28,8 @@ class fullLog:
     def __init__(self, txt):
         self.readingList(txt)
         self.logtolistoflists()
-        self.createOOP()
-        self.shineFound()        
+        self.createOOP()            #TODO Could`ve make oop in logtolistoflists
+        self.shineFound()           #TODO Could`ve make oop in logtolistoflists
         self.allNone()
         self.allIdRespAddress()
 
@@ -94,7 +94,7 @@ class fullLog:
                 
     def allResponseLen(self):
         oopList = self.oopList
-        for log in ooplist:
+        for log in self.ooplist:
             self.all_response_len(log.response_header_len)
         
     
